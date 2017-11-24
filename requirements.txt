@@ -1,1 +1,5 @@
-pillow
+pandas
+numpy
+os
+sys
+cv2
