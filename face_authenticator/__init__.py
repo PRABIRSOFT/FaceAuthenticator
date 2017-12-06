@@ -11,13 +11,13 @@ import sys
 import cv2
 import pandas as pd
 import numpy as np
-import face_authenticator
+import face_authenticator as __fa__
 
-installed_path = os.path.dirname(face_authenticator.__file__)
+__installed_path__ = os.path.dirname(__fa__.__file__)
 
 # Class FaceAuthenticator
 class FaceAuthenticator():
-    __face_cascade__     = cv2.CascadeClassifier(installed_path + "/res/lbpcascade_frontalface.xml")
+    __face_cascade__     = cv2.CascadeClassifier(__installed_path__ + "/res/lbpcascade_frontalface.xml")
     __X__                = None
     __y__                = None
     __x__                = None
@@ -42,6 +42,7 @@ class FaceAuthenticator():
         
         try:
             os.stat(self.__rootpath__ + "faces/")
+            self.__prepare_training_data__()
         except:
             os.mkdir(self.__rootpath__ + "faces/")
             
@@ -83,6 +84,7 @@ class FaceAuthenticator():
                 for (x, y, w, h) in faces:
                     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
                 crop_img = frame[y: y + h, x: x + w]
+                crop_img = cv2.fastNlMeansDenoisingColored(crop_img,None,10,10,7,21)
                 cv2.imwrite(train_path + str(index) + ".jpg", crop_img)
                 break
         cap.release()
@@ -102,7 +104,9 @@ class FaceAuthenticator():
             if(len(faces) > 0):
                 for (x, y, w, h) in faces:
                     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                crop_img = gray[y: y + h, x: x + w]
+                crop_img = frame[y: y + h, x: x + w]
+                crop_img = cv2.fastNlMeansDenoisingColored(crop_img,None,10,10,7,21)
+                crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
                 break
         cap.release()
         self.__x__ = crop_img
