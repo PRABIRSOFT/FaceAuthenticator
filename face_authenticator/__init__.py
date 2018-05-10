@@ -42,9 +42,13 @@ class FaceAuthenticator():
         
         try:
             os.stat(self.__rootpath__ + "faces/")
-            self.__prepare_training_data__()
         except:
             os.mkdir(self.__rootpath__ + "faces/")
+            
+        try:
+            self.__prepare_training_data__()
+        except:
+            print("no traing set")
             
     # function To capture a face using webcam
     # params 'name' = Person Name whose record are going to save in memory
